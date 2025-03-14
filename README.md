@@ -1,0 +1,2 @@
+# miner
+Factor miner
