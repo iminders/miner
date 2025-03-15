@@ -1,140 +1,180 @@
-# A股高频因子挖掘项目
+# Miner - 高频交易数据挖掘工具
 
-基于每秒级别的orderbook数据，构建一个A股高频因子挖掘系统，用于发现和验证可能具有预测能力的交易信号。
+Miner是一个用于高频交易数据挖掘的Python工具包，专注于从订单簿和成交数据中提取有价值的特征和因子。
 
-## 项目概述
+## 项目结构
+miner/
+├── README.md                      # 项目说明文档
+├── TODO.md                        # 待办事项列表
+├── examples/                      # 示例代码目录
+│   ├── backtest_example.py        # 回测系统使用示例
+│   ├── factor_example.py          # 因子计算示例
+│   ├── monitoring_example.py      # 监控系统示例
+│   └── realtime_example.py        # 实时交易系统示例
+├── requirements.txt               # 项目依赖包列表
+└── src/                           # 源代码目录
+├── backtest/                  # 回测系统模块
+│   ├── backtest_engine.py     # 回测引擎
+│   ├── performance_analyzer.py # 性能分析器
+│   └── portfolio.py           # 投资组合管理
+├── data/                      # 数据处理模块
+│   ├── data_loader.py         # 数据加载器
+│   ├── data_processor.py      # 数据处理器
+│   └── data_source.py         # 数据源接口
+├── evaluation/                # 评估模块
+│   ├── factor_evaluation.py   # 因子评估
+│   └── performance_metrics.py # 性能指标计算
+├── features/                  # 特征工程模块
+│   ├── basic_features.py      # 基础特征提取
+│   ├── feature_extractor.py   # 特征提取器
+│   ├── microstructure.py      # 市场微观结构特征
+│   ├── ml_features.py         # 机器学习特征
+│   └── time_series.py         # 时间序列特征
+├── monitoring/                # 监控与报警系统
+│   ├── alert_handlers.py      # 报警处理器
+│   ├── anomaly_detector.py    # 异常检测器
+│   ├── factor_monitor.py      # 因子表现监控
+│   ├── monitor_base.py        # 监控基础类
+│   ├── monitoring_system.py   # 监控系统整合
+│   └── strategy_monitor.py    # 策略表现监控
+├── realtime/                  # 实时交易系统
+│   ├── data_feed.py           # 实时数据馈送
+│   ├── factor_calculator.py   # 实时因子计算
+│   ├── realtime_system.py     # 实时系统整合
+│   └── signal_generator.py    # 信号生成器
+└── strategy/                  # 策略模块
+├── portfolio_optimizer.py # 投资组合优化
+├── risk_manager.py        # 风险管理
+└── strategy.py            # 策略基类
 
-本项目旨在利用高频orderbook数据挖掘有效的交易因子，构建量化交易策略，并通过严格的回测验证其有效性。
 
-## 项目阶段
+## 模块说明
 
-### 第一阶段：数据准备与预处理（2-3周）
+### 1. 回测系统 (backtest)
+- **backtest_engine.py**: 实现回测引擎，支持历史数据回放和策略评估
+- **performance_analyzer.py**: 分析策略回测结果，计算各种性能指标
+- **portfolio.py**: 管理投资组合，包括持仓、交易和资金管理
 
-1. **数据整理**
-   - 建立数据库存储结构
-   - 清洗和标准化orderbook数据
-   - 处理缺失值和异常值
-   - 时间戳对齐和同步
+### 2. 数据处理 (data)
+- **data_loader.py**: 从各种来源加载数据，支持多种数据格式
+- **data_processor.py**: 数据预处理，包括清洗、标准化和特征变换
+- **data_source.py**: 定义数据源接口，支持实时和历史数据获取
 
-2. **基础特征提取**
-   - 提取基本价格信息（中间价、最优买卖价等）
-   - 计算基础量价指标（买卖盘深度、挂单量比等）
-   - 计算订单流失衡指标
+### 3. 评估模块 (evaluation)
+- **factor_evaluation.py**: 评估因子的预测能力和稳定性
+- **performance_metrics.py**: 计算各种性能指标，如夏普比率、最大回撤等
 
-### 第二阶段：因子构建（3-4周）
+### 4. 特征工程 (features)
+- **basic_features.py**: 从订单簿数据中提取基本价格和量信息
+- **feature_extractor.py**: 整合各类特征提取器的主类
+- **microstructure.py**: 提取市场微观结构特征，如有效价差、订单流不平衡等
+- **ml_features.py**: 生成适用于机器学习的高级特征
+- **time_series.py**: 提取时间序列特征，如移动平均、波动率等
 
-1. **微观结构因子**
-   - 订单簿不平衡因子
-   - 价格压力因子
-   - 流动性因子（如有效价差、市场深度等）
-   - 订单流毒性因子
+### 5. 监控与报警系统 (monitoring)
+- **alert_handlers.py**: 处理各种报警，支持控制台、文件、邮件和Webhook等方式
+- **anomaly_detector.py**: 检测数据中的异常并发送报警
+- **factor_monitor.py**: 监控因子的IC值、收益率等指标
+- **monitor_base.py**: 监控系统的基础类，提供通用功能
+- **monitoring_system.py**: 整合各种监控和报警功能
+- **strategy_monitor.py**: 监控策略的收益率、回撤、夏普比率等指标
 
-2. **时序特征因子**
-   - 价格动量因子
-   - 波动率因子
-   - 均值回归因子
-   - 价格跳跃因子
+### 6. 实时交易系统 (realtime)
+- **data_feed.py**: 提供实时市场数据
+- **factor_calculator.py**: 实时计算因子值
+- **realtime_system.py**: 整合实时交易系统的各个组件
+- **signal_generator.py**: 根据因子值生成交易信号
 
-3. **机器学习特征工程**
-   - 特征组合与交互
-   - 非线性变换
-   - 时间序列特征（自回归特征、滚动窗口特征等）
+### 7. 策略模块 (strategy)
+- **portfolio_optimizer.py**: 优化投资组合权重
+- **risk_manager.py**: 管理交易风险，包括仓位控制和止损策略
+- **strategy.py**: 策略基类，定义策略接口和通用功能
 
-### 第三阶段：因子评估与选择（2-3周）
+## 功能特点
 
-1. **单因子测试**
-   - IC分析（信息系数）
-   - 因子收益率分析
-   - 因子稳定性分析
-   - 因子衰减分析
+### 1. 基础特征提取
 
-2. **多因子组合**
-   - 因子相关性分析
-   - 因子聚类
-   - 多因子模型构建
-   - 权重优化
+- 中间价格、买卖价差、订单簿深度等基本指标
+- 订单簿不平衡度、订单簿形状特征
+- 价格波动性指标
 
-### 第四阶段：策略开发与回测（3-4周）
+### 2. 微观结构因子
 
-1. **策略设计**
-   - 信号生成逻辑
-   - 交易规则设定
-   - 风险控制参数
+- 有效价差、实现价差
+- 市场深度、订单簿压力
+- Kyle's Lambda (价格影响因子)
+- 订单流毒性 (Order Flow Toxicity)
+- 订单簿斜率和曲率
 
-2. **回测系统**
-   - 构建高频回测框架
-   - 模拟真实交易环境（滑点、手续费等）
-   - 性能评估指标计算
+### 3. 时序特征因子
 
-3. **策略优化**
-   - 参数优化
-   - 交易时机优化
-   - 止盈止损优化
+- 动量因子 (不同时间窗口)
+- 波动率因子
+- 均值回归因子
+- 价格跳跃因子
+- 趋势因子
 
-### 第五阶段：系统实现与部署（2-3周）
+### 4. 机器学习特征工程
 
-1. **实时计算框架**
-   - 数据实时接入
-   - 因子实时计算
-   - 信号实时生成
+- 特征交互项
+- 非线性变换
+- 时间滞后特征
+- 滚动窗口特征
+- 降维和特征选择
 
-2. **监控与报警系统**
-   - 因子表现监控
-   - 策略表现监控
-   - 异常检测与报警
+### 5. 因子评估
 
-## 技术栈选择
+- 信息系数(IC)计算
+- 因子分组收益率
+- 因子换手率和稳定性
+- 因子衰减特性
+- 因子暴露度和中性化
 
-1. **数据处理与存储**
-   - Python (pandas, numpy)
-   - ClickHouse/TimescaleDB（时序数据库）
-   - HDF5/Parquet（高效文件存储）
+## 安装
 
-2. **因子计算**
-   - NumPy, SciPy
-   - Numba（高性能计算）
-   - Dask/Ray（分布式计算）
+```bash
+git clone https://github.com/iminders/miner.git
+cd miner
+pip install -e .
+```
 
-3. **机器学习**
-   - Scikit-learn
-   - LightGBM/XGBoost
-   - PyTorch/TensorFlow（深度学习模型）
+## 使用示例
 
-4. **回测与可视化**
-   - Backtrader/Zipline（回测框架）
-   - Matplotlib, Seaborn, Plotly（可视化）
-   - Dash/Streamlit（交互式仪表盘）
+基础特征提取
 
-## 项目风险与挑战
+```python
+from src.features.basic_features import BasicFeatureExtractor
 
-1. **数据质量问题**
-   - 高频数据噪声大
-   - 可能存在数据缺失或异常
-   - 解决方案：强健的数据清洗流程，异常检测算法
+# 初始化特征提取器
+extractor = BasicFeatureExtractor()
 
-2. **计算性能挑战**
-   - 高频数据量大，计算密集
-   - 解决方案：优化代码，使用并行计算，考虑GPU加速
+# 提取基础特征
+features = extractor.extract_all_basic_features(orderbook)
 
-3. **过拟合风险**
-   - 高频数据易导致过拟合
-   - 解决方案：严格的样本外测试，时间序列交叉验证
+```
+微观结构特征提取
+```python
+from src.features.microstructure_features import MicrostructureFeatureExtractor
 
-4. **市场微观结构变化**
-   - 交易规则和市场结构可能变化
-   - 解决方案：定期重新训练模型，设计自适应因子
+# 初始化特征提取器
+extractor = MicrostructureFeatureExtractor()
 
-## 项目里程碑
+# 提取微观结构特征
+features = extractor.extract_all_microstructure_features(orderbook)
 
-1. **第1个月**：完成数据预处理和基础特征提取
-2. **第2-3个月**：完成因子构建和初步评估
-3. **第4个月**：完成多因子模型和策略设计
-4. **第5个月**：完成回测系统和策略优化
-5. **第6个月**：完成实时系统部署和监控框架
+```
 
-## 后续扩展方向
+因子评估
 
-1. 深度学习模型探索（CNN, RNN, Transformer等）
-2. 强化学习交易策略研究
-3. 多市场、多品种因子迁移性研究
-4. 高频套利策略开发
+```python
+from src.evaluation.factor_evaluation import FactorEvaluator
+
+# 初始化因子评估器
+evaluator = FactorEvaluator()
+
+# 评估因子
+evaluation_results = evaluator.evaluate_factor(factor_data, returns_data)
+
+# 可视化评估结果
+evaluator.plot_factor_evaluation(results, 'MyFactor')
+```
